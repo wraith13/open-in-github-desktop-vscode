@@ -1,7 +1,7 @@
 {
-	"name": "open-by-github-desktop",
-	"displayName": "Open by GitHub Desktop",
-	"description": "Open by GitHub Desktop for VS Code",
+	"name": "open-in-github-desktop",
+	"displayName": "Open in GitHub Desktop",
+	"description": "Open in GitHub Desktop for VS Code",
 	"version": "0.0.0",
 	"engines": {
 		"vscode": "^1.35.0"

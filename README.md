@@ -1,6 +1,6 @@
-# open-by-github-desktop README
+# open-in-github-desktop README
 
-This is the README for your extension "open-by-github-desktop". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "open-in-github-desktop". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 
