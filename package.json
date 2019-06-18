@@ -4,6 +4,7 @@
     "description": "Open in GitHub Desktop from VS Code",
     "version": "0.0.0",
     "icon": "images/open-in-github-desktop.128.png",
+    "license": "SEE LICENSE IN LICENSE_1_0.txt",
     "engines": {
         "vscode": "^1.35.0"
     },
