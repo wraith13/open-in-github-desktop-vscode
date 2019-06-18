@@ -9,7 +9,7 @@ Open in GitHub Desktop from VS Code.
 * Open in GitHub Desktop from command pallete.
 * Open in GitHub Desktop from status bar.
 
-![screen shot](./images/screenshot.png)
+![screen shot](https://raw.githubusercontent.com/wraith13/open-in-github-desktop-vscode/master/images/screenshot.png)
 
 ## Requirements
 
