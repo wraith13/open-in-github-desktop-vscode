@@ -1,0 +1,9 @@
+{
+    "openInGithubDesktop.title": "Open In GitHub Desktop",
+    "openInGithubDesktop.statusBar.Label.description": "Label on status bar. Requires a restart to take effect.",
+    "openInGithubDesktop.statusBar.Alignment.description": "Alignment on status bar. Requires a restart to take effect.",
+    "openInGithubDesktop.notOpenFolderInThisWindow": "Not open folder in this window.",
+    "openInGithubDesktop.notFoundGitConfig": "Not found '.git/config'.",
+    "openInGithubDesktop.canNotReadGitConfig": "Can not read '.git/config'.",
+    "openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig": "Not found [remote \"origin\"]/url in '.git/config'."
+}

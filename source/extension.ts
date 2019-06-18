@@ -1,27 +1,21 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
+import localeEn from "../package.nls.json";
+import localeJa from "../package.nls.ja.json";
+
+interface LocaleEntry
+{
+    [key : string] : string;
+}
+const localeTableKey = <string>JSON.parse(<string>process.env.VSCODE_NLS_CONFIG).locale;
+const localeTable = Object.assign(localeEn, ((<{[key : string] : LocaleEntry}>{
+    ja : localeJa
+})[localeTableKey] || { }));
+const localeString = (key : string) : string => localeTable[key] || key;
+
 module fx
 {
-    export function readdir(path : string)
-        : Thenable<{ error : NodeJS.ErrnoException | null, files : string[] }>
-    {
-        return new Promise
-        (
-            resolve => fs.readdir
-            (
-                path,
-                (error : NodeJS.ErrnoException | null, files : string[]) => resolve
-                (
-                    {
-                        error,
-                        files
-                    }
-                )
-            )
-        );
-    }
-
     export function exists(path : string) : Thenable<boolean>
     {
         return new Promise
@@ -106,30 +100,30 @@ export const openInGithubDesktop = async () =>
                 }
                 else
                 {
-                    vscode.window.showErrorMessage(".git/config 内に [remote \"origin\"]/url の情報が見つかりません。");
+                    vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
                 }
             }
             else
             {
-                vscode.window.showErrorMessage(".git/config を読み込めません。");
+                vscode.window.showErrorMessage(localeString("openInGithubDesktop.canNotReadGitConfig"));
             }
         }
         else
         {
-            vscode.window.showErrorMessage(".git/config が見つかりません。");
+            vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundGitConfig"));
         }
     }
     else
     {
-        vscode.window.showErrorMessage("このウィンドウではフォルダが開かれてません。");
+        vscode.window.showErrorMessage(localeString("openInGithubDesktop.notOpenFolderInThisWindow"));
     }
 };
 
-const applicationKey = "openInGithubDesktop";
 class Config<valueT>
 {
     public constructor
     (
+        public section: string,
         public name: string,
         public defaultValue: valueT,
         public validator?: (value: valueT) => boolean,
@@ -166,14 +160,14 @@ class Config<valueT>
     }
     public get = (): valueT =>
     {
-        let result = <valueT>vscode.workspace.getConfiguration(applicationKey)[this.name];
+        let result = <valueT>vscode.workspace.getConfiguration(this.section)[this.name];
         if (undefined === result)
         {
             result = this.defaultValue;
         }
         else
         {
-            result = this.regulate(`${applicationKey}.${this.name}`, result);
+            result = this.regulate(`${this.section}.${this.name}`, result);
         }
         return result;
     }
@@ -192,15 +186,16 @@ export const activate = (context: vscode.ExtensionContext) =>
 {
     context.subscriptions.push(vscode.commands.registerCommand('openInGithubDesktop', openInGithubDesktop));
 
-    const statusBarAlignment = new Config<keyof typeof alignmentObject>("statusBarAlignment", "right", makeEnumValidator(Object.keys(alignmentObject)));
+    const applicationKey = "openInGithubDesktop";
+    const statusBarAlignment = new Config<keyof typeof alignmentObject>(`${applicationKey}.statusBar`, "Alignment", "right", makeEnumValidator(Object.keys(alignmentObject)));
     const alignment = alignmentObject[statusBarAlignment.get()];
     if (alignment)
     {
-        const statusBarLabel = new Config("statusBarLabel", "$(arrow-right)$(mark-github)", text => undefined !== text && null !== text && "" !== text);
+        const statusBarLabel = new Config(`${applicationKey}.statusBar`, "Label", "$(arrow-right)$(mark-github)", text => undefined !== text && null !== text && "" !== text);
         const statusBarButton = vscode.window.createStatusBarItem(alignment);
         statusBarButton.text = statusBarLabel.get();
         statusBarButton.command = `openInGithubDesktop`;
-        statusBarButton.tooltip = "Open In GitHub Desktop";
+        statusBarButton.tooltip = localeString("openInGithubDesktop.title");
         context.subscriptions.push(statusBarButton);
         statusBarButton.show();
     }

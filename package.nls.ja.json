@@ -1,0 +1,9 @@
+{
+    "openInGithubDesktop.title": "GitHub Desktop で開く",
+    "openInGithubDesktop.statusBar.Label.description": "ステータスバーでのラベル。有効にするには再起動が必要です。",
+    "openInGithubDesktop.statusBar.Alignment.description": "ステータスバーでの表示位置。有効にするには再起動が必要です。",
+    "openInGithubDesktop.notOpenFolderInThisWindow": "このウィンドウではフォルダが開かれてません。",
+    "openInGithubDesktop.notFoundGitConfig": ".git/config が見つかりません。",
+    "openInGithubDesktop.canNotReadGitConfig": ".git/config を読み込めません。",
+    "openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig": ".git/config 内に [remote \"origin\"]/url の情報が見つかりません。"
+}

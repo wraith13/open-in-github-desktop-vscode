@@ -1,38 +1,60 @@
 {
-	"name": "open-in-github-desktop",
-	"displayName": "Open in GitHub Desktop",
-	"description": "Open in GitHub Desktop for VS Code",
-	"version": "0.0.0",
-	"engines": {
-		"vscode": "^1.35.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"*"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "openInGithubDesktop",
-				"title": "Open In GitHub Desktop"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "npm run compile && node ./node_modules/vscode/bin/test"
-	},
-	"devDependencies": {
-		"typescript": "^3.1.4",
-		"vscode": "^1.1.25",
-		"tslint": "^5.8.0",
-		"@types/node": "^8.10.25",
-		"@types/mocha": "^2.2.42"
-	}
+    "name": "open-in-github-desktop",
+    "displayName": "Open in GitHub Desktop",
+    "description": "Open in GitHub Desktop from VS Code",
+    "version": "0.0.0",
+    "engines": {
+        "vscode": "^1.35.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/source/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "openInGithubDesktop",
+                "title": "%openInGithubDesktop.title%"
+            }
+        ],
+        "configuration": [
+            {
+                "title": "Open in GitHub Desktop",
+                "properties": {
+                    "openInGithubDesktop.statusBar.Label": {
+                        "type": "string",
+                        "default": "$(arrow-right)$(mark-github)",
+                        "description": "%openInGithubDesktop.statusBar.Label.description%"
+                    },
+                    "openInGithubDesktop.statusBar.Alignment": {
+                        "type": "string",
+                        "default": "right",
+                        "enum": [
+                            "none",
+                            "left",
+                            "right"
+                        ],
+                        "description": "%openInGithubDesktop.statusBar.Alignment.description%"
+                    }
+                }
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^3.1.4",
+        "vscode": "^1.1.25",
+        "tslint": "^5.8.0",
+        "@types/node": "^8.10.25",
+        "@types/mocha": "^2.2.42"
+    }
 }
