@@ -2,14 +2,27 @@
     "name": "open-in-github-desktop",
     "displayName": "Open in GitHub Desktop",
     "description": "Open in GitHub Desktop from VS Code",
-    "version": "0.0.0",
     "icon": "images/open-in-github-desktop.128.png",
+    "version": "1.0.1",
+    "publisher": "wraith13",
     "license": "SEE LICENSE IN LICENSE_1_0.txt",
     "engines": {
         "vscode": "^1.35.0"
     },
+    "bugs": {
+        "url": "https://github.com/wraith13/open-in-github-desktop-vscode/issues"
+    },
+    "homepage": "https://github.com/wraith13/open-in-github-desktop-vscode/blob/master/README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wraith13/open-in-github-desktop-vscode.git"
+    },
     "categories": [
         "Other"
+    ],
+    "keywords": [
+        "GitHub",
+        "GitHub Desktop"
     ],
     "activationEvents": [
         "*"

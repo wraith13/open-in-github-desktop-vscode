@@ -4,6 +4,10 @@ out/test/**
 source/**
 .gitignore
 vsc-extension-quickstart.md
+images/open-in-github-desktop.1024.png
+images/open-in-github-desktop.ico
+.history/**
+private/**
 **/tsconfig.json
 **/tslint.json
 **/*.map
