@@ -21,7 +21,7 @@ Open in GitHub Desktop from VS Code.
 
 Show extension side bar within VS Code(Mac:<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>), type `open-in-github-desktop` and press <kbd>Enter</kbd> and click <kbd>Install</kbd>. Restart VS Code when installation is completed.
 
-### 1. ✨️ Show Open In GitHub Desktop
+### 1. ➡️ Open In GitHub Desktop
 
 Click item( see screen shot above ) in statub bar or launch Command Palette(Mac:<kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>), Execute `Open In GitHub Desktop` command.
 
