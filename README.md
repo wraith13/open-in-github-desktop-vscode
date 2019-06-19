@@ -2,7 +2,7 @@
 
 [![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version/wraith13.open-in-github-desktop.svg) ![installs](https://vsmarketplacebadge.apphb.com/installs/wraith13.open-in-github-desktop.svg) ![rating](https://vsmarketplacebadge.apphb.com/rating/wraith13.open-in-github-desktop.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.open-in-github-desktop)
 
-Open in GitHub Desktop from VS Code.
+Open in [GitHub Desktop](https://desktop.github.com/) from VS Code.
 
 ## Features
 
@@ -13,7 +13,7 @@ Open in GitHub Desktop from VS Code.
 
 ## Requirements
 
-* GitHub Desktop has been installed.
+* [GitHub Desktop](https://desktop.github.com/) has been installed.
 
 ## Tutorial
 
