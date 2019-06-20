@@ -1,5 +1,6 @@
 {
     "openInGithubDesktop.title": "Open In GitHub Desktop",
+    "openInGithubDesktop.traverseSearchGitConfig.description": "'.git/config' is also searched from parent folders. Requires a restart to take effect.",
     "openInGithubDesktop.statusBar.Label.description": "Label on status bar. Requires a restart to take effect.",
     "openInGithubDesktop.statusBar.Alignment.description": "Alignment on status bar. Requires a restart to take effect.",
     "openInGithubDesktop.notOpenFolderInThisWindow": "Not open folder in this window.",

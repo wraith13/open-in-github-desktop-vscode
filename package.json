@@ -39,6 +39,11 @@
             {
                 "title": "Open in GitHub Desktop",
                 "properties": {
+                    "openInGithubDesktop.traverseSearchGitConfig": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "%openInGithubDesktop.traverseSearchGitConfig.description%"
+                    },
                     "openInGithubDesktop.statusBar.Label": {
                         "type": "string",
                         "default": "$(arrow-right)$(mark-github)",

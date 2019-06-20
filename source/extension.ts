@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as process from 'process';
 
 import localeEn from "../package.nls.json";
 import localeJa from "../package.nls.ja.json";
@@ -13,6 +14,72 @@ const localeTable = Object.assign(localeEn, ((<{[key : string] : LocaleEntry}>{
     ja : localeJa
 })[localeTableKey] || { }));
 const localeString = (key : string) : string => localeTable[key] || key;
+
+const isWindows = "win32" === process.platform;
+
+class Config<valueT>
+{
+    public constructor
+    (
+        public section: string,
+        public name: string,
+        public defaultValue: valueT,
+        public validator?: (value: valueT) => boolean,
+        public minValue?: valueT,
+        public maxValue?: valueT
+    )
+    {
+
+    }
+
+    regulate = (rawKey: string, value: valueT): valueT =>
+    {
+        let result = value;
+        if (this.validator && !this.validator(result))
+        {
+            // settings.json をテキストとして直接編集してる時はともかく GUI での編集時に無駄にエラー表示が行われてしまうので、エンドユーザーに対するエラー表示は行わない。
+            //vscode.window.showErrorMessage(`${rawKey} setting value is invalid! Please check your settings.`);
+            console.error(`${rawKey} setting value is invalid! Please check your settings.`);
+            result = this.defaultValue;
+        }
+        else
+        {
+            if (undefined !== this.minValue && result < this.minValue)
+            {
+                result = this.minValue;
+            }
+            else
+            if (undefined !== this.maxValue && this.maxValue < result)
+            {
+                result = this.maxValue;
+            }
+        }
+        return result;
+    }
+    public get = (): valueT =>
+    {
+        let result = <valueT>vscode.workspace.getConfiguration(this.section)[this.name];
+        if (undefined === result)
+        {
+            result = this.defaultValue;
+        }
+        else
+        {
+            result = this.regulate(`${this.section}.${this.name}`, result);
+        }
+        return result;
+    }
+}
+const makeEnumValidator = (valueList: string[]): (value: string) => boolean => (value: string): boolean => 0 <= valueList.indexOf(value);
+const alignmentObject = Object.freeze
+(
+    {
+        "none": undefined,
+        "left": vscode.StatusBarAlignment.Left,
+        "right": vscode.StatusBarAlignment.Right,
+    }
+);
+const applicationKey = "openInGithubDesktop";
 
 module fx
 {
@@ -81,12 +148,36 @@ const parseGitConifg = (gitConfigSource: string): { [section:string]: { [key:str
     return result;
 };
 
+const traverseSearchGitConfig = new Config(`${applicationKey}`, "traverseSearchGitConfig", true);
+const regulateDirPath = (folder: string) => folder.replace(isWindows ? /\\$/: /\/$/,"");
+const isRootDir = (folder: string) => isWindows ?
+    (
+        /^\w+\:$/.test(regulateDirPath(folder)) ||
+        /^\\\\[^\\]+\\[^\\]+$/.test(regulateDirPath(folder))
+    ):
+    "" === regulateDirPath(folder);
+const getParentDir = (folder: string) => regulateDirPath(folder).replace(isWindows ? /\\[^\\]*$/: /\/[^\/]*$/, "");
+const searchGitConfig = async (folder: string): Promise<string | null> =>
+{
+    const gitConfigPath = `${folder}/.git/config`;
+    if (await fx.exists(gitConfigPath))
+    {
+        return gitConfigPath;
+    }
+    if (!isRootDir(folder) && traverseSearchGitConfig.get())
+    {
+        return await searchGitConfig(getParentDir(folder));
+    }
+
+    return null;
+};
+
 export const openInGithubDesktop = async () =>
 {
     if (vscode.workspace.rootPath)
     {
-        const gitConfigPath = `${vscode.workspace.rootPath}/.git/config`;
-        if (await fx.exists(gitConfigPath))
+        const gitConfigPath = await searchGitConfig(vscode.workspace.rootPath);
+        if (null !== gitConfigPath)
         {
             const { err, data } = await fx.readFile(gitConfigPath);
             if (!err && data)
@@ -119,74 +210,10 @@ export const openInGithubDesktop = async () =>
     }
 };
 
-class Config<valueT>
-{
-    public constructor
-    (
-        public section: string,
-        public name: string,
-        public defaultValue: valueT,
-        public validator?: (value: valueT) => boolean,
-        public minValue?: valueT,
-        public maxValue?: valueT
-    )
-    {
-
-    }
-
-    regulate = (rawKey: string, value: valueT): valueT =>
-    {
-        let result = value;
-        if (this.validator && !this.validator(result))
-        {
-            // settings.json をテキストとして直接編集してる時はともかく GUI での編集時に無駄にエラー表示が行われてしまうので、エンドユーザーに対するエラー表示は行わない。
-            //vscode.window.showErrorMessage(`${rawKey} setting value is invalid! Please check your settings.`);
-            console.error(`${rawKey} setting value is invalid! Please check your settings.`);
-            result = this.defaultValue;
-        }
-        else
-        {
-            if (undefined !== this.minValue && result < this.minValue)
-            {
-                result = this.minValue;
-            }
-            else
-            if (undefined !== this.maxValue && this.maxValue < result)
-            {
-                result = this.maxValue;
-            }
-        }
-        return result;
-    }
-    public get = (): valueT =>
-    {
-        let result = <valueT>vscode.workspace.getConfiguration(this.section)[this.name];
-        if (undefined === result)
-        {
-            result = this.defaultValue;
-        }
-        else
-        {
-            result = this.regulate(`${this.section}.${this.name}`, result);
-        }
-        return result;
-    }
-}
-const makeEnumValidator = (valueList: string[]): (value: string) => boolean => (value: string): boolean => 0 <= valueList.indexOf(value);
-const alignmentObject = Object.freeze
-(
-    {
-        "none": undefined,
-        "left": vscode.StatusBarAlignment.Left,
-        "right": vscode.StatusBarAlignment.Right,
-    }
-);
-
 export const activate = (context: vscode.ExtensionContext) =>
 {
     context.subscriptions.push(vscode.commands.registerCommand('openInGithubDesktop', openInGithubDesktop));
 
-    const applicationKey = "openInGithubDesktop";
     const statusBarAlignment = new Config<keyof typeof alignmentObject>(`${applicationKey}.statusBar`, "Alignment", "right", makeEnumValidator(Object.keys(alignmentObject)));
     const alignment = alignmentObject[statusBarAlignment.get()];
     if (alignment)
