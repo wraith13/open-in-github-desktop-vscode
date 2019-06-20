@@ -10,6 +10,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - '.git/config' is also searched from parent folders.
 
+### Fixed
+
+- Fixed application keys in README.
+
 ## 1.0.2 - 2019-06-19
 
 ### Fixed
