@@ -1,6 +1,6 @@
 {
     "openInGithubDesktop.title": "GitHub Desktop で開く",
-    "openInGithubDesktop.traverseSearchGitConfig.description": "親フォルダも手繰って .git/config を探します。有効にするには再起動が必要です。",
+    "openInGithubDesktop.traversalSearchGitConfig.description": "親フォルダも手繰って .git/config を探します。有効にするには再起動が必要です。",
     "openInGithubDesktop.statusBar.Label.description": "ステータスバーでのラベル。有効にするには再起動が必要です。",
     "openInGithubDesktop.statusBar.Alignment.description": "ステータスバーでの表示位置。有効にするには再起動が必要です。",
     "openInGithubDesktop.notOpenFolderInThisWindow": "このウィンドウではフォルダが開かれてません。",

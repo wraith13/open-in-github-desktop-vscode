@@ -148,7 +148,7 @@ const parseGitConifg = (gitConfigSource: string): { [section:string]: { [key:str
     return result;
 };
 
-const traverseSearchGitConfig = new Config(`${applicationKey}`, "traverseSearchGitConfig", true);
+const traversalSearchGitConfig = new Config(`${applicationKey}`, "traversalSearchGitConfig", true);
 const regulateDirPath = (folder: string) => folder.replace(isWindows ? /\\$/: /\/$/,"");
 const isRootDir = (folder: string) => isWindows ?
     (
@@ -164,7 +164,7 @@ const searchGitConfig = async (folder: string): Promise<string | null> =>
     {
         return gitConfigPath;
     }
-    if (!isRootDir(folder) && traverseSearchGitConfig.get())
+    if (!isRootDir(folder) && traversalSearchGitConfig.get())
     {
         return await searchGitConfig(getParentDir(folder));
     }

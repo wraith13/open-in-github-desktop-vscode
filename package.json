@@ -39,10 +39,10 @@
             {
                 "title": "Open in GitHub Desktop",
                 "properties": {
-                    "openInGithubDesktop.traverseSearchGitConfig": {
+                    "openInGithubDesktop.traversalSearchGitConfig": {
                         "type": "boolean",
                         "default": true,
-                        "description": "%openInGithubDesktop.traverseSearchGitConfig.description%"
+                        "description": "%openInGithubDesktop.traversalSearchGitConfig.description%"
                     },
                     "openInGithubDesktop.statusBar.Label": {
                         "type": "string",
