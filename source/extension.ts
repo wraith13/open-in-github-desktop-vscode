@@ -187,26 +187,26 @@ export const openInGithubDesktop = async () =>
                 const repositoryUrl = (gitConfig["remote \"origin\""] || { })["url"];
                 if (repositoryUrl)
                 {
-                    vscode.env.openExternal(vscode.Uri.parse(`x-github-client://openRepo/${repositoryUrl}`));
+                    await vscode.env.openExternal(vscode.Uri.parse(`x-github-client://openRepo/${repositoryUrl}`));
                 }
                 else
                 {
-                    vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
+                    await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
                 }
             }
             else
             {
-                vscode.window.showErrorMessage(localeString("openInGithubDesktop.canNotReadGitConfig"));
+                await vscode.window.showErrorMessage(localeString("openInGithubDesktop.canNotReadGitConfig"));
             }
         }
         else
         {
-            vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundGitConfig"));
+            await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundGitConfig"));
         }
     }
     else
     {
-        vscode.window.showErrorMessage(localeString("openInGithubDesktop.notOpenFolderInThisWindow"));
+        await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notOpenFolderInThisWindow"));
     }
 };
 
