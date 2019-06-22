@@ -174,39 +174,39 @@ const searchGitConfig = async (folder: string): Promise<string | null> =>
 
 export const openInGithubDesktop = async () =>
 {
-    if (vscode.workspace.rootPath)
+    if (!vscode.workspace.rootPath)
+    {
+        await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notOpenFolderInThisWindow"));
+    }
+    else
     {
         const gitConfigPath = await searchGitConfig(vscode.workspace.rootPath);
-        if (null !== gitConfigPath)
+        if (null === gitConfigPath)
+        {
+            await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundGitConfig"));
+        }
+        else
         {
             const { err, data } = await fx.readFile(gitConfigPath);
-            if (!err && data)
+            if (err || !data)
+            {
+                await vscode.window.showErrorMessage(localeString("openInGithubDesktop.canNotReadGitConfig"));
+            }
+            else
             {
                 const gitConfigSource = data.toString();
                 const gitConfig = parseGitConifg(gitConfigSource);
                 const repositoryUrl = (gitConfig["remote \"origin\""] || { })["url"];
-                if (repositoryUrl)
-                {
-                    await vscode.env.openExternal(vscode.Uri.parse(`x-github-client://openRepo/${repositoryUrl}`));
-                }
-                else
+                if (!repositoryUrl)
                 {
                     await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
                 }
-            }
-            else
-            {
-                await vscode.window.showErrorMessage(localeString("openInGithubDesktop.canNotReadGitConfig"));
+                else
+                {
+                    await vscode.env.openExternal(vscode.Uri.parse(`x-github-client://openRepo/${repositoryUrl}`));
+                }
             }
         }
-        else
-        {
-            await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundGitConfig"));
-        }
-    }
-    else
-    {
-        await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notOpenFolderInThisWindow"));
     }
 };
 
