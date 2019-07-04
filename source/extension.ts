@@ -172,6 +172,8 @@ const searchGitConfig = async (folder: string): Promise<string | null> =>
     return null;
 };
 
+export const openExternal = (uri: string) => vscode.env.openExternal(vscode.Uri.parse(uri));
+
 export const openInGithubDesktop = async () =>
 {
     if (!vscode.workspace.rootPath)
@@ -203,7 +205,7 @@ export const openInGithubDesktop = async () =>
                 }
                 else
                 {
-                    await vscode.env.openExternal(vscode.Uri.parse(`x-github-client://openRepo/${repositoryUrl}`));
+                    await openExternal(`x-github-client://openRepo/${repositoryUrl}`);
                 }
             }
         }
