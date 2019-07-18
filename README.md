@@ -2,8 +2,6 @@
 
 [![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version/wraith13.open-in-github-desktop.svg) ![installs](https://vsmarketplacebadge.apphb.com/installs/wraith13.open-in-github-desktop.svg) ![rating](https://vsmarketplacebadge.apphb.com/rating/wraith13.open-in-github-desktop.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.open-in-github-desktop)
 
-⚠️ [Does not work at all with VS Code v1.36](https://github.com/wraith13/open-in-github-desktop-vscode/issues/1)
-
 Open in [GitHub Desktop](https://desktop.github.com/) from VS Code.
 
 ## Features

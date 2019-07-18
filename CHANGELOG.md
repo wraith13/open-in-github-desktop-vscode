@@ -4,6 +4,12 @@ All notable changes to the "unsaved-files-vscode" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.1.2 - 2019-07-18
+
+### Removed
+
+- Removed the description of [Does not work at all with VS Code v1.36](https://github.com/wraith13/open-in-github-desktop-vscode/issues/1) from REAME.
+
 ## 1.1.1 - 2019-07-08
 
 ### Added
