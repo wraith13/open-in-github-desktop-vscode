@@ -157,16 +157,16 @@ const isRootDir = (folder: string) => isWindows ?
     ):
     "" === regulateDirPath(folder);
 const getParentDir = (folder: string) => regulateDirPath(folder).replace(isWindows ? /\\[^\\]*$/: /\/[^\/]*$/, "");
-const searchGitConfig = async (folder: string): Promise<string | null> =>
+const searchGitConfig = async (folder: string, traversalSearch: boolean): Promise<string | null> =>
 {
     const gitConfigPath = `${folder}/.git/config`;
     if (await fx.exists(gitConfigPath))
     {
         return gitConfigPath;
     }
-    if (!isRootDir(folder) && traversalSearchGitConfig.get())
+    if (!isRootDir(folder) && traversalSearch)
     {
-        return await searchGitConfig(getParentDir(folder));
+        return await searchGitConfig(getParentDir(folder), traversalSearch);
     }
 
     return null;
@@ -182,7 +182,8 @@ export const openInGithubDesktop = async () =>
     }
     else
     {
-        const gitConfigPath = await searchGitConfig(vscode.workspace.rootPath);
+        const traversalSearch = traversalSearchGitConfig.get();
+        const gitConfigPath = await searchGitConfig(vscode.workspace.rootPath, traversalSearch);
         if (null === gitConfigPath)
         {
             await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundGitConfig"));
