@@ -148,7 +148,6 @@ const parseGitConifg = (gitConfigSource: string): { [section:string]: { [key:str
     return result;
 };
 
-const traversalSearchGitConfig = new Config(`${applicationKey}`, "traversalSearchGitConfig", true);
 const regulateDirPath = (folder: string) => folder.replace(isWindows ? /\\$/: /\/$/,"");
 const isRootDir = (folder: string) => isWindows ?
     (
@@ -176,38 +175,41 @@ export const openExternal = (uri: string) => vscode.env.openExternal(vscode.Uri.
 
 export const openInGithubDesktop = async () =>
 {
-    if (!vscode.workspace.rootPath)
+    const activeTextEditor = vscode.window.activeTextEditor;
+    const searchForDocument = activeTextEditor && new Config(`${applicationKey}`, "traversalSearchGitConfigForCurrentDocument", true).get();
+    const gitConfigPath =
+        ((activeTextEditor && searchForDocument) ? await searchGitConfig(getParentDir(activeTextEditor.document.fileName), true): null) ||
+        (vscode.workspace.rootPath ? await searchGitConfig(vscode.workspace.rootPath, new Config(`${applicationKey}`, "traversalSearchGitConfig", true).get()): null);
+    if (null === gitConfigPath)
     {
-        await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notOpenFolderInThisWindow"));
-    }
-    else
-    {
-        const traversalSearch = traversalSearchGitConfig.get();
-        const gitConfigPath = await searchGitConfig(vscode.workspace.rootPath, traversalSearch);
-        if (null === gitConfigPath)
+        if (searchForDocument || vscode.workspace.rootPath)
         {
             await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundGitConfig"));
         }
         else
         {
-            const { err, data } = await fx.readFile(gitConfigPath);
-            if (err || !data)
+            await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notOpenFolderInThisWindow"));
+        }
+    }
+    else
+    {
+        const { err, data } = await fx.readFile(gitConfigPath);
+        if (err || !data)
+        {
+            await vscode.window.showErrorMessage(localeString("openInGithubDesktop.canNotReadGitConfig"));
+        }
+        else
+        {
+            const gitConfigSource = data.toString();
+            const gitConfig = parseGitConifg(gitConfigSource);
+            const repositoryUrl = (gitConfig["remote \"origin\""] || { })["url"];
+            if (!repositoryUrl)
             {
-                await vscode.window.showErrorMessage(localeString("openInGithubDesktop.canNotReadGitConfig"));
+                await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
             }
             else
             {
-                const gitConfigSource = data.toString();
-                const gitConfig = parseGitConifg(gitConfigSource);
-                const repositoryUrl = (gitConfig["remote \"origin\""] || { })["url"];
-                if (!repositoryUrl)
-                {
-                    await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
-                }
-                else
-                {
-                    await openExternal(`x-github-client://openRepo/${repositoryUrl}`);
-                }
+                await openExternal(`x-github-client://openRepo/${repositoryUrl}`);
             }
         }
     }

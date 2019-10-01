@@ -1,6 +1,7 @@
 {
     "openInGithubDesktop.title": "Open In GitHub Desktop",
     "openInGithubDesktop.traversalSearchGitConfig.description": "'.git/config' is also searched from parent folders.",
+    "openInGithubDesktop.traversalSearchGitConfigForCurrentDocument.description": "'.git/config' is searched from parent folders of the currently open text file.",
     "openInGithubDesktop.statusBar.Label.description": "Label on status bar. Requires a restart to take effect.",
     "openInGithubDesktop.statusBar.Alignment.description": "Alignment on status bar. Requires a restart to take effect.",
     "openInGithubDesktop.notOpenFolderInThisWindow": "Not open folder in this window.",

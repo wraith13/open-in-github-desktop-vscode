@@ -44,6 +44,11 @@
                         "default": true,
                         "description": "%openInGithubDesktop.traversalSearchGitConfig.description%"
                     },
+                    "openInGithubDesktop.traversalSearchGitConfigForCurrentDocument": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "%openInGithubDesktop.traversalSearchGitConfigForCurrentDocument.description%"
+                    },
                     "openInGithubDesktop.statusBar.Label": {
                         "type": "string",
                         "default": "$(arrow-right)$(mark-github)",
