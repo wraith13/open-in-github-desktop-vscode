@@ -167,7 +167,6 @@ const searchGitConfig = async (folder: string, traversalSearch: boolean): Promis
     {
         return await searchGitConfig(getParentDir(folder), traversalSearch);
     }
-
     return null;
 };
 
