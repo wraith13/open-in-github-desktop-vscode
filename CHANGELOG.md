@@ -4,6 +4,16 @@ All notable changes to the "unsaved-files-vscode" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.2.0 - 2019-10-02
+
+### Added
+
+- '.git/config' is searched from parent folders of the currently open text file.
+
+### Changed
+
+- Changed that 'traversalSearchGitConfig' setting take effect immediately. ( Does not requires a restart to take effect. )
+
 ## 1.1.2 - 2019-07-18
 
 ### Removed

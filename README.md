@@ -39,7 +39,8 @@ Enjoy!
 
 This extension contributes the following settings by [`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>File</kbd> -> <kbd>Preferences</kbd> -> <kbd>User Settings</kbd> ):
 
-* `openInGithubDesktop.traversalSearchGitConfig`: '.git/config' is also searched from parent folders. Requires a restart to take effect.
+* `openInGithubDesktop.traversalSearchGitConfig`: '.git/config' is also searched from parent folders.
+* `openInGithubDesktop.traversalSearchGitConfigForCurrentDocument`: '.git/config' is searched from parent folders of the currently open text file.
 * `openInGithubDesktop.statusBar.Label`: Label on status bar. Requires a restart to take effect.
 * `openInGithubDesktop.statusBar.Alignment`: Alignment on status bar. Requires a restart to take effect.
 
