@@ -74,6 +74,9 @@
         "lint": "eslint src --ext ts",
         "watch": "tsc -watch -p ./"
     },
+    "dependencies": {
+        "@wraith13/vscel": "^0.0.20"
+    },
     "devDependencies": {
         "@types/vscode": "^1.50.0",
         "@types/node": "^12.11.7",
