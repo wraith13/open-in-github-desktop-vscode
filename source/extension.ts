@@ -1,70 +1,12 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as process from 'process';
+import * as vscel from '@wraith13/vscel';
+import packageJson from "../package.json";
 import localeEn from "../package.nls.json";
 import localeJa from "../package.nls.ja.json";
-interface LocaleEntry
-{
-    [key : string] : string;
-}
-const localeTableKey = <string>JSON.parse(<string>process.env.VSCODE_NLS_CONFIG).locale;
-const localeTable = Object.assign(localeEn, ((<{[key : string] : LocaleEntry}>{
-    ja : localeJa
-})[localeTableKey] || { }));
-const localeString = (key : string) : string => localeTable[key] || key;
+const locale = vscel.locale.make(localeEn, { "ja": localeJa });
 const isWindows = "win32" === process.platform;
-class Config<valueT>
-{
-    public constructor
-    (
-        public section: string,
-        public name: string,
-        public defaultValue: valueT,
-        public validator?: (value: valueT) => boolean,
-        public minValue?: valueT,
-        public maxValue?: valueT
-    )
-    {
-    }
-    regulate = (rawKey: string, value: valueT): valueT =>
-    {
-        let result = value;
-        if (this.validator && !this.validator(result))
-        {
-            // settings.json をテキストとして直接編集してる時はともかく GUI での編集時に無駄にエラー表示が行われてしまうので、エンドユーザーに対するエラー表示は行わない。
-            //vscode.window.showErrorMessage(`${rawKey} setting value is invalid! Please check your settings.`);
-            console.error(`${rawKey} setting value is invalid! Please check your settings.`);
-            result = this.defaultValue;
-        }
-        else
-        {
-            if (undefined !== this.minValue && result < this.minValue)
-            {
-                result = this.minValue;
-            }
-            else
-            if (undefined !== this.maxValue && this.maxValue < result)
-            {
-                result = this.maxValue;
-            }
-        }
-        return result;
-    }
-    public get = (): valueT =>
-    {
-        let result = <valueT>vscode.workspace.getConfiguration(this.section)[this.name];
-        if (undefined === result)
-        {
-            result = this.defaultValue;
-        }
-        else
-        {
-            result = this.regulate(`${this.section}.${this.name}`, result);
-        }
-        return result;
-    }
-}
-const makeEnumValidator = (valueList: string[]): (value: string) => boolean => (value: string): boolean => 0 <= valueList.indexOf(value);
 const alignmentObject = Object.freeze
 (
     {
@@ -73,7 +15,17 @@ const alignmentObject = Object.freeze
         "right": vscode.StatusBarAlignment.Right,
     }
 );
-const applicationKey = "openInGithubDesktop";
+module config
+{
+    export const root = vscel.config.makeRoot(packageJson);
+    export const traversalSearchGitConfig = root.makeEntry<boolean>("openInGithubDesktop.traversalSearchGitConfig");
+    export const traversalSearchGitConfigForCurrentDocument = root.makeEntry<boolean>("openInGithubDesktop.traversalSearchGitConfigForCurrentDocument");
+    export module statusBar
+    {
+        export const label = root.makeEntry<string>("openInGithubDesktop.statusBar.Label");
+        export const alignment = root.makeMapEntry("openInGithubDesktop.statusBar.Alignment", alignmentObject);
+    }
+}
 module fx
 {
     export const exists = (path: string): Thenable<boolean> => new Promise
@@ -156,19 +108,19 @@ export const openExternal = (uri: string) => vscode.env.openExternal(vscode.Uri.
 export const openInGithubDesktop = async () =>
 {
     const activeTextEditor = vscode.window.activeTextEditor;
-    const searchForDocument = activeTextEditor && new Config(`${applicationKey}`, "traversalSearchGitConfigForCurrentDocument", true).get();
+    const searchForDocument = activeTextEditor && config.traversalSearchGitConfigForCurrentDocument.get("");
     const gitConfigPath =
         ((activeTextEditor && searchForDocument) ? await searchGitConfig(getParentDir(activeTextEditor.document.fileName), true): null) ||
-        (vscode.workspace.rootPath ? await searchGitConfig(vscode.workspace.rootPath, new Config(`${applicationKey}`, "traversalSearchGitConfig", true).get()): null);
+        (vscode.workspace.rootPath ? await searchGitConfig(vscode.workspace.rootPath, config.traversalSearchGitConfig.get("")): null);
     if (null === gitConfigPath)
     {
         if (searchForDocument || vscode.workspace.rootPath)
         {
-            await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundGitConfig"));
+            await vscode.window.showErrorMessage(locale.map("openInGithubDesktop.notFoundGitConfig"));
         }
         else
         {
-            await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notOpenFolderInThisWindow"));
+            await vscode.window.showErrorMessage(locale.map("openInGithubDesktop.notOpenFolderInThisWindow"));
         }
     }
     else
@@ -176,7 +128,7 @@ export const openInGithubDesktop = async () =>
         const { err, data } = await fx.readFile(gitConfigPath);
         if (err || !data)
         {
-            await vscode.window.showErrorMessage(localeString("openInGithubDesktop.canNotReadGitConfig"));
+            await vscode.window.showErrorMessage(locale.map("openInGithubDesktop.canNotReadGitConfig"));
         }
         else
         {
@@ -185,7 +137,7 @@ export const openInGithubDesktop = async () =>
             const repositoryUrl = (gitConfig["remote \"origin\""] || { })["url"];
             if (!repositoryUrl)
             {
-                await vscode.window.showErrorMessage(localeString("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
+                await vscode.window.showErrorMessage(locale.map("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
             }
             else
             {
@@ -197,17 +149,31 @@ export const openInGithubDesktop = async () =>
 export const activate = (context: vscode.ExtensionContext) =>
 {
     context.subscriptions.push(vscode.commands.registerCommand('openInGithubDesktop', openInGithubDesktop));
-    const statusBarAlignment = new Config<keyof typeof alignmentObject>(`${applicationKey}.statusBar`, "Alignment", "right", makeEnumValidator(Object.keys(alignmentObject)));
-    const alignment = alignmentObject[statusBarAlignment.get()];
+    const alignment = config.statusBar.alignment.get("");
     if (alignment)
     {
-        const statusBarLabel = new Config(`${applicationKey}.statusBar`, "Label", "$(arrow-right)$(mark-github)", text => undefined !== text && null !== text && "" !== text);
         const statusBarButton = vscode.window.createStatusBarItem(alignment);
-        statusBarButton.text = statusBarLabel.get();
+        statusBarButton.text = config.statusBar.label.get("");
         statusBarButton.command = `openInGithubDesktop`;
-        statusBarButton.tooltip = localeString("openInGithubDesktop.title");
+        statusBarButton.tooltip = locale.map("openInGithubDesktop.title");
         context.subscriptions.push(statusBarButton);
         statusBarButton.show();
     }
+    context.subscriptions.push
+    (
+        vscode.workspace.onDidChangeConfiguration
+        (
+            async (event) =>
+            {
+                if
+                (
+                    event.affectsConfiguration("openInGithubDesktop")
+                )
+                {
+                    config.root.entries.forEach(i => i.clear());
+                }
+            }
+        )
+    );
 };
 export const deactivate = () => { };
