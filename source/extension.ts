@@ -1,10 +1,8 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as process from 'process';
-
 import localeEn from "../package.nls.json";
 import localeJa from "../package.nls.ja.json";
-
 interface LocaleEntry
 {
     [key : string] : string;
@@ -14,9 +12,7 @@ const localeTable = Object.assign(localeEn, ((<{[key : string] : LocaleEntry}>{
     ja : localeJa
 })[localeTableKey] || { }));
 const localeString = (key : string) : string => localeTable[key] || key;
-
 const isWindows = "win32" === process.platform;
-
 class Config<valueT>
 {
     public constructor
@@ -29,9 +25,7 @@ class Config<valueT>
         public maxValue?: valueT
     )
     {
-
     }
-
     regulate = (rawKey: string, value: valueT): valueT =>
     {
         let result = value;
@@ -80,35 +74,25 @@ const alignmentObject = Object.freeze
     }
 );
 const applicationKey = "openInGithubDesktop";
-
 module fx
 {
-    export function exists(path : string) : Thenable<boolean>
-    {
-        return new Promise
+    export const exists = (path: string): Thenable<boolean> => new Promise
+    (
+        resolve => fs.exists
         (
-            resolve => fs.exists
-            (
-                path,
-                exists => resolve(exists)
-            )
-        );
-    }
-
-    export function readFile(path : string)
-        : Thenable<{ err : NodeJS.ErrnoException | null, data : Buffer }>
-    {
-        return new Promise
+            path,
+            exists => resolve(exists)
+        )
+    );
+    export const readFile = (path: string): Thenable<{ err : NodeJS.ErrnoException | null, data : Buffer }> => new Promise
+    (
+        resolve => fs.readFile
         (
-            resolve => fs.readFile
-            (
-                path,
-                (err : NodeJS.ErrnoException | null, data : Buffer) => resolve({ err, data })
-            )
-        );
-    }
+            path,
+            (err : NodeJS.ErrnoException | null, data : Buffer) => resolve({ err, data })
+        )
+    );
 }
-
 const parseGitConifg = (gitConfigSource: string): { [section:string]: { [key:string]: string } } =>
 {
     const result: { [section:string]: { [key:string]: string } } = { };
@@ -147,7 +131,6 @@ const parseGitConifg = (gitConfigSource: string): { [section:string]: { [key:str
         );
     return result;
 };
-
 const regulateDirPath = (folder: string) => folder.replace(isWindows ? /\\$/: /\/$/,"");
 const isRootDir = (folder: string) => isWindows ?
     (
@@ -169,9 +152,7 @@ const searchGitConfig = async (folder: string, traversalSearch: boolean): Promis
     }
     return null;
 };
-
 export const openExternal = (uri: string) => vscode.env.openExternal(vscode.Uri.parse(uri));
-
 export const openInGithubDesktop = async () =>
 {
     const activeTextEditor = vscode.window.activeTextEditor;
@@ -213,11 +194,9 @@ export const openInGithubDesktop = async () =>
         }
     }
 };
-
 export const activate = (context: vscode.ExtensionContext) =>
 {
     context.subscriptions.push(vscode.commands.registerCommand('openInGithubDesktop', openInGithubDesktop));
-
     const statusBarAlignment = new Config<keyof typeof alignmentObject>(`${applicationKey}.statusBar`, "Alignment", "right", makeEnumValidator(Object.keys(alignmentObject)));
     const alignment = alignmentObject[statusBarAlignment.get()];
     if (alignment)
@@ -231,5 +210,4 @@ export const activate = (context: vscode.ExtensionContext) =>
         statusBarButton.show();
     }
 };
-
-export function deactivate() {}
+export const deactivate = () => { };
