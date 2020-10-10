@@ -105,10 +105,11 @@ const searchGitConfig = async (folder: string, traversalSearch: boolean): Promis
     return null;
 };
 export const openExternal = (uri: string) => vscode.env.openExternal(vscode.Uri.parse(uri));
+export const isDocumentOnFileSystem = (document: vscode.TextDocument) => "file" === document.uri.scheme;
 export const openInGithubDesktop = async () =>
 {
     const activeTextEditor = vscode.window.activeTextEditor;
-    const searchForDocument = activeTextEditor && config.traversalSearchGitConfigForCurrentDocument.get("");
+    const searchForDocument = activeTextEditor && isDocumentOnFileSystem(activeTextEditor.document) && config.traversalSearchGitConfigForCurrentDocument.get("");
     const gitConfigPath =
         ((activeTextEditor && searchForDocument) ? await searchGitConfig(getParentDir(activeTextEditor.document.fileName), true): null) ||
         (vscode.workspace.rootPath ? await searchGitConfig(vscode.workspace.rootPath, config.traversalSearchGitConfig.get("")): null);

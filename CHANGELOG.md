@@ -4,6 +4,12 @@ All notable changes to the "unsaved-files-vscode" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.2.1 - 2020-10-??
+
+### Fixed
+
+- Fixed an issue that did not work if the active document did not exist on the file system.
+
 ## 1.2.0 - 2019-10-02
 
 ### Added
