@@ -42,17 +42,20 @@
                     "openInGithubDesktop.traversalSearchGitConfig": {
                         "type": "boolean",
                         "default": true,
-                        "description": "%openInGithubDesktop.traversalSearchGitConfig.description%"
+                        "description": "%openInGithubDesktop.traversalSearchGitConfig.description%",
+                        "scope": "window"
                     },
                     "openInGithubDesktop.traversalSearchGitConfigForCurrentDocument": {
                         "type": "boolean",
                         "default": true,
-                        "description": "%openInGithubDesktop.traversalSearchGitConfigForCurrentDocument.description%"
+                        "description": "%openInGithubDesktop.traversalSearchGitConfigForCurrentDocument.description%",
+                        "scope": "window"
                     },
                     "openInGithubDesktop.statusBar.Label": {
                         "type": "string",
                         "default": "$(arrow-right)$(mark-github)",
-                        "description": "%openInGithubDesktop.statusBar.Label.description%"
+                        "description": "%openInGithubDesktop.statusBar.Label.description%",
+                        "scope": "window"
                     },
                     "openInGithubDesktop.statusBar.Alignment": {
                         "type": "string",
@@ -62,7 +65,8 @@
                             "left",
                             "right"
                         ],
-                        "description": "%openInGithubDesktop.statusBar.Alignment.description%"
+                        "description": "%openInGithubDesktop.statusBar.Alignment.description%",
+                        "scope": "window"
                     }
                 }
             }
