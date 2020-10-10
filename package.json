@@ -7,7 +7,7 @@
     "publisher": "wraith13",
     "license": "SEE LICENSE IN LICENSE_1_0.txt",
     "engines": {
-        "vscode": "^1.36.1"
+        "vscode": "^1.50.0"
     },
     "bugs": {
         "url": "https://github.com/wraith13/open-in-github-desktop-vscode/issues"
@@ -71,13 +71,16 @@
     "scripts": {
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install"
+        "lint": "eslint src --ext ts",
+        "watch": "tsc -watch -p ./"
     },
     "devDependencies": {
-        "typescript": "^3.1.4",
-        "vscode": "^1.1.25",
-        "tslint": "^5.8.0",
-        "@types/node": "^8.10.25"
+        "@types/vscode": "^1.50.0",
+        "@types/node": "^12.11.7",
+        "eslint": "^7.9.0",
+        "@typescript-eslint/eslint-plugin": "^4.1.1",
+        "@typescript-eslint/parser": "^4.1.1",
+        "typescript": "^4.0.2",
+        "vscode-test": "^1.4.0"
     }
 }
