@@ -15,7 +15,76 @@ const alignmentObject = Object.freeze
         "right": vscode.StatusBarAlignment.Right,
     }
 );
-module config
+const diagnosticWarningObject = Object.freeze
+(
+    {
+        "none": async () => true,
+        "error": async () =>
+        {
+            const hasError = vscode.languages.getDiagnostics().some
+            (
+                f => f[1].some(d => vscode.DiagnosticSeverity.Error === d.severity)
+            );
+            return ! hasError ||
+                undefined !== await vscode.window.showWarningMessage
+                (
+                    "You have error.",
+                    { modal: true, },
+                    "Continue"
+                );
+        },
+        "error and warning": async () =>
+        {
+            const hasErrorOrWarning = vscode.languages.getDiagnostics().some
+            (
+                f => f[1].some
+                (
+                    d =>
+                        vscode.DiagnosticSeverity.Error === d.severity ||
+                        vscode.DiagnosticSeverity.Warning === d.severity
+                )
+            );
+            return ! hasErrorOrWarning ||
+                undefined !== await vscode.window.showWarningMessage
+                (
+                    "You have error or warning.",
+                    { modal: true, },
+                    "Continue"
+                );
+        },
+    }
+);
+const unsavedWarningObject = Object.freeze
+(
+    {
+        "none": async () => true,
+        "unsaved existing file": async () =>
+        {
+            const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty && !i.isUntitled)
+                .map(i => i.fileName);
+            return unsavedFiles.length <= 0 ||
+                undefined !== await vscode.window.showWarningMessage
+                (
+                    "You have unsaved existing files:\n\n" +unsavedFiles.join("\n"),
+                    { modal: true, },
+                    "Continue"
+                );
+        },
+        "all unsaved file": async () =>
+        {
+            const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty || i.isUntitled)
+            .map(i => i.fileName);
+            return unsavedFiles.length <= 0 ||
+                undefined !== await vscode.window.showWarningMessage
+                (
+                    "You have unsaved files:\n\n" +unsavedFiles.join("\n"),
+                    { modal: true, },
+                    "Continue"
+                );
+        },
+    }
+);
+module Config
 {
     export const root = vscel.config.makeRoot(packageJson);
     export const traversalSearchGitConfig = root.makeEntry<boolean>("openInGithubDesktop.traversalSearchGitConfig");
@@ -25,6 +94,8 @@ module config
         export const label = root.makeEntry<string>("openInGithubDesktop.statusBar.Label");
         export const alignment = root.makeMapEntry("openInGithubDesktop.statusBar.Alignment", alignmentObject);
     }
+    export const diagnosticWarning = root.makeMapEntry("openInGithubDesktop.diagnosticWarning", diagnosticWarningObject);
+    export const unsavedWarning = root.makeMapEntry("openInGithubDesktop.unsavedWarning", unsavedWarningObject);
 }
 module fx
 {
@@ -109,10 +180,10 @@ export const isDocumentOnFileSystem = (document: vscode.TextDocument) => "file" 
 export const openInGithubDesktop = async () =>
 {
     const activeTextEditor = vscode.window.activeTextEditor;
-    const searchForDocument = activeTextEditor && isDocumentOnFileSystem(activeTextEditor.document) && config.traversalSearchGitConfigForCurrentDocument.get("");
+    const searchForDocument = activeTextEditor && isDocumentOnFileSystem(activeTextEditor.document) && Config.traversalSearchGitConfigForCurrentDocument.get("");
     const gitConfigPath =
         ((activeTextEditor && searchForDocument) ? await searchGitConfig(getParentDir(activeTextEditor.document.fileName), true): null) ||
-        (vscode.workspace.rootPath ? await searchGitConfig(vscode.workspace.rootPath, config.traversalSearchGitConfig.get("")): null);
+        (vscode.workspace.rootPath ? await searchGitConfig(vscode.workspace.rootPath, Config.traversalSearchGitConfig.get("")): null);
     if (null === gitConfigPath)
     {
         if (searchForDocument || vscode.workspace.rootPath)
@@ -141,6 +212,11 @@ export const openInGithubDesktop = async () =>
                 await vscode.window.showErrorMessage(locale.map("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
             }
             else
+            if
+            (
+                await Config.diagnosticWarning.get("")() &&
+                await Config.unsavedWarning.get("")()
+            )
             {
                 await openExternal(`x-github-client://openRepo/${repositoryUrl}`);
             }
@@ -150,11 +226,11 @@ export const openInGithubDesktop = async () =>
 export const activate = (context: vscode.ExtensionContext) =>
 {
     context.subscriptions.push(vscode.commands.registerCommand('openInGithubDesktop', openInGithubDesktop));
-    const alignment = config.statusBar.alignment.get("");
+    const alignment = Config.statusBar.alignment.get("");
     if (alignment)
     {
         const statusBarButton = vscode.window.createStatusBarItem(alignment);
-        statusBarButton.text = config.statusBar.label.get("");
+        statusBarButton.text = Config.statusBar.label.get("");
         statusBarButton.command = `openInGithubDesktop`;
         statusBarButton.tooltip = locale.map("openInGithubDesktop.title");
         context.subscriptions.push(statusBarButton);
@@ -171,7 +247,7 @@ export const activate = (context: vscode.ExtensionContext) =>
                     event.affectsConfiguration("openInGithubDesktop")
                 )
                 {
-                    config.root.entries.forEach(i => i.clear());
+                    Config.root.entries.forEach(i => i.clear());
                 }
             }
         )
