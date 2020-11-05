@@ -70,22 +70,32 @@
                     },
                     "openInGithubDesktop.diagnosticWarning": {
                         "type": "string",
-                        "default": "error and warning",
+                        "default": "error or warning",
                         "enum": [
                             "none",
                             "error",
-                            "error and warning"
+                            "error or warning"
+                        ],
+                        "enumDescriptions": [
+                            "%openInGithubDesktop.diagnosticWarning.none.description%",
+                            "%openInGithubDesktop.diagnosticWarning.error.description%",
+                            "%openInGithubDesktop.diagnosticWarning.error or warning.description%"
                         ],
                         "description": "%openInGithubDesktop.diagnosticWarning.description%",
                         "scope": "window"
                     },
                     "openInGithubDesktop.unsavedWarning": {
                         "type": "string",
-                        "default": "unsaved existing file",
+                        "default": "unsaved existing files",
                         "enum": [
                             "none",
-                            "unsaved existing file",
-                            "all unsaved file"
+                            "unsaved existing files",
+                            "unsaved files"
+                        ],
+                        "enumDescriptions": [
+                            "%openInGithubDesktop.unsavedWarning.none.description%",
+                            "%openInGithubDesktop.unsavedWarning.unsaved existing files.description%",
+                            "%openInGithubDesktop.unsavedWarning.unsaved files.description%"
                         ],
                         "description": "%openInGithubDesktop.unsavedWarning.description%",
                         "scope": "window"

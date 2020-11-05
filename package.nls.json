@@ -4,8 +4,21 @@
     "openInGithubDesktop.traversalSearchGitConfigForCurrentDocument.description": "'.git/config' is searched from parent folders of the currently open text file.",
     "openInGithubDesktop.statusBar.Label.description": "Label on status bar. Requires a restart to take effect.",
     "openInGithubDesktop.statusBar.Alignment.description": "Alignment on status bar. Requires a restart to take effect.",
+    "openInGithubDesktop.diagnosticWarning.description": "Warning display when there are error or warning.",
+    "openInGithubDesktop.diagnosticWarning.none.description": "No warning is displayed even if there are error or warning.",
+    "openInGithubDesktop.diagnosticWarning.error.description": "Display a warning if there are error.",
+    "openInGithubDesktop.diagnosticWarning.error or warning.description": "Display a warning if there are error or warning.",
+    "openInGithubDesktop.unsavedWarning.description": "Warning display when there are unsaved existing files.",
+    "openInGithubDesktop.unsavedWarning.none.description": "No warning is displayed even if there are unsaved files.",
+    "openInGithubDesktop.unsavedWarning.unsaved existing files.description": "Displays a warning if there are unsaved existing files.",
+    "openInGithubDesktop.unsavedWarning.unsaved files.description": "Displays a warning if there are unsaved files.",
     "openInGithubDesktop.notOpenFolderInThisWindow": "Not open folder in this window.",
     "openInGithubDesktop.notFoundGitConfig": "Not found '.git/config'.",
     "openInGithubDesktop.canNotReadGitConfig": "Can not read '.git/config'.",
-    "openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig": "Not found [remote \"origin\"]/url in '.git/config'."
+    "openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig": "Not found [remote \"origin\"]/url in '.git/config'.",
+    "You have error.": "You have error.",
+    "You have error or warning.": "You have error or warning.",
+    "You have unsaved existing files.": "You have unsaved existing files.",
+    "You have unsaved files.": "You have unsaved files.",
+    "Continue": "Continue"
 }

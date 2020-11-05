@@ -43,6 +43,8 @@ This extension contributes the following settings by [`settings.json`](https://c
 * `openInGithubDesktop.traversalSearchGitConfigForCurrentDocument`: '.git/config' is searched from parent folders of the currently open text file.
 * `openInGithubDesktop.statusBar.Label`: Label on status bar. Requires a restart to take effect.
 * `openInGithubDesktop.statusBar.Alignment`: Alignment on status bar. Requires a restart to take effect.
+* `openInGithubDesktop.diagnosticWarning`: Warning display when there are error or warning.
+* `openInGithubDesktop.unsavedWarning`: Warning display when there are unsaved existing files.
 
 You can embed icons in the label text by leveraging the syntax:
 

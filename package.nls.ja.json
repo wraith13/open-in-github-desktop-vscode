@@ -4,8 +4,21 @@
     "openInGithubDesktop.traversalSearchGitConfigForCurrentDocument.description": "現在開いてるテキストファイルの親フォルダを手繰って .git/config を探します。",
     "openInGithubDesktop.statusBar.Label.description": "ステータスバーでのラベル。有効にするには再起動が必要です。",
     "openInGithubDesktop.statusBar.Alignment.description": "ステータスバーでの表示位置。有効にするには再起動が必要です。",
+    "openInGithubDesktop.diagnosticWarning.description": "エラーや警告がある場合の警告表示。",
+    "openInGithubDesktop.diagnosticWarning.none.description": "エラーや警告があっても警告を表示しません。",
+    "openInGithubDesktop.diagnosticWarning.error.description": "エラーがある場合に警告を表示します。",
+    "openInGithubDesktop.diagnosticWarning.error or warning.description": "エラーや警告がある場合に警告を表示します。",
+    "openInGithubDesktop.unsavedWarning.description": "未保存の既存ファイルがある場合の警告表示。",
+    "openInGithubDesktop.unsavedWarning.none.description": "未保存のファイルがあっても警告を表示しません。",
+    "openInGithubDesktop.unsavedWarning.unsaved existing files.description": "未保存の既存ファイルがある場合に警告を表示します。",
+    "openInGithubDesktop.unsavedWarning.unsaved files.description": "未保存のファイルがある場合に警告を表示します。",
     "openInGithubDesktop.notOpenFolderInThisWindow": "このウィンドウではフォルダが開かれてません。",
     "openInGithubDesktop.notFoundGitConfig": ".git/config が見つかりません。",
     "openInGithubDesktop.canNotReadGitConfig": ".git/config を読み込めません。",
-    "openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig": ".git/config 内に [remote \"origin\"]/url の情報が見つかりません。"
+    "openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig": ".git/config 内に [remote \"origin\"]/url の情報が見つかりません。",
+    "You have error.": "エラーがあります。",
+    "You have error or warning.": "エラーや警告があります。",
+    "You have unsaved existing files.": "未保存の既存ファイルがあります。",
+    "You have unsaved files.": "未保存のファイルがあります。",
+    "Continue": "続行"
 }
