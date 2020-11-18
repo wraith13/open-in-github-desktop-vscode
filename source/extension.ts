@@ -223,12 +223,17 @@ export const activate = (context: vscode.ExtensionContext) =>
     const alignment = Config.statusBar.alignment.get("");
     if (alignment)
     {
-        const statusBarButton = vscode.window.createStatusBarItem(alignment);
-        statusBarButton.text = Config.statusBar.label.get("");
-        statusBarButton.command = `openInGithubDesktop`;
-        statusBarButton.tooltip = locale.map("openInGithubDesktop.title");
-        context.subscriptions.push(statusBarButton);
-        statusBarButton.show();
+        context.subscriptions.push
+        (
+            vscel.statusbar.createItem
+            ({
+                alignment,
+                text: Config.statusBar.label.get(""),
+                command: `openInGithubDesktop`,
+                tooltip: locale.map("openInGithubDesktop.title"),
+                withShow: true,
+            })
+        );
     }
     context.subscriptions.push
     (
