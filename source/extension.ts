@@ -8,82 +8,76 @@ import localeJa from "../package.nls.ja.json";
 const locale = vscel.locale.make(localeEn, { "ja": localeJa });
 const isWindows = "win32" === process.platform;
 const alignmentObject = Object.freeze
-(
-    {
-        "none": undefined,
-        "left": vscode.StatusBarAlignment.Left,
-        "right": vscode.StatusBarAlignment.Right,
-    }
-);
+({
+    "none": undefined,
+    "left": vscode.StatusBarAlignment.Left,
+    "right": vscode.StatusBarAlignment.Right,
+});
 const diagnosticWarningObject = Object.freeze
-(
+({
+    "none": async () => true,
+    "error": async () =>
     {
-        "none": async () => true,
-        "error": async () =>
-        {
-            const hasError = vscode.languages.getDiagnostics().some
+        const hasError = vscode.languages.getDiagnostics().some
+        (
+            f => f[1].some(d => vscode.DiagnosticSeverity.Error === d.severity)
+        );
+        return ! hasError ||
+            undefined !== await vscode.window.showWarningMessage
             (
-                f => f[1].some(d => vscode.DiagnosticSeverity.Error === d.severity)
+                locale.map("You have error."),
+                { modal: true, },
+                locale.map("Continue")
             );
-            return ! hasError ||
-                undefined !== await vscode.window.showWarningMessage
-                (
-                    locale.map("You have error."),
-                    { modal: true, },
-                    locale.map("Continue")
-                );
-        },
-        "error or warning": async () =>
-        {
-            const hasErrorOrWarning = vscode.languages.getDiagnostics().some
+    },
+    "error or warning": async () =>
+    {
+        const hasErrorOrWarning = vscode.languages.getDiagnostics().some
+        (
+            f => f[1].some
             (
-                f => f[1].some
-                (
-                    d =>
-                        vscode.DiagnosticSeverity.Error === d.severity ||
-                        vscode.DiagnosticSeverity.Warning === d.severity
-                )
+                d =>
+                    vscode.DiagnosticSeverity.Error === d.severity ||
+                    vscode.DiagnosticSeverity.Warning === d.severity
+            )
+        );
+        return ! hasErrorOrWarning ||
+            undefined !== await vscode.window.showWarningMessage
+            (
+                locale.map("You have error or warning."),
+                { modal: true, },
+                locale.map("Continue")
             );
-            return ! hasErrorOrWarning ||
-                undefined !== await vscode.window.showWarningMessage
-                (
-                    locale.map("You have error or warning."),
-                    { modal: true, },
-                    locale.map("Continue")
-                );
-        },
-    }
-);
+    },
+});
 const unsavedWarningObject = Object.freeze
-(
+({
+    "none": async () => true,
+    "unsaved existing files": async () =>
     {
-        "none": async () => true,
-        "unsaved existing files": async () =>
-        {
-            const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty && !i.isUntitled)
-                .map(i => i.fileName);
-            return unsavedFiles.length <= 0 ||
-                undefined !== await vscode.window.showWarningMessage
-                (
-                    locale.map("You have unsaved existing files."),
-                    { modal: true, },
-                    locale.map("Continue")
-                );
-        },
-        "unsaved files": async () =>
-        {
-            const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty || i.isUntitled)
+        const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty && !i.isUntitled)
             .map(i => i.fileName);
-            return unsavedFiles.length <= 0 ||
-                undefined !== await vscode.window.showWarningMessage
-                (
-                    locale.map("You have unsaved files."),
-                    { modal: true, },
-                    locale.map("Continue")
-                );
-        },
-    }
-);
+        return unsavedFiles.length <= 0 ||
+            undefined !== await vscode.window.showWarningMessage
+            (
+                locale.map("You have unsaved existing files."),
+                { modal: true, },
+                locale.map("Continue")
+            );
+    },
+    "unsaved files": async () =>
+    {
+        const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty || i.isUntitled)
+        .map(i => i.fileName);
+        return unsavedFiles.length <= 0 ||
+            undefined !== await vscode.window.showWarningMessage
+            (
+                locale.map("You have unsaved files."),
+                { modal: true, },
+                locale.map("Continue")
+            );
+    },
+});
 module Config
 {
     export const root = vscel.config.makeRoot(packageJson);
