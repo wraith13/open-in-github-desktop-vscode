@@ -20,5 +20,6 @@
     "You have error or warning.": "You have error or warning.",
     "You have unsaved existing files.": "You have unsaved existing files.",
     "You have unsaved files.": "You have unsaved files.",
-    "Continue": "Continue"
+    "Continue": "Continue",
+    "Cancel": "Cancel"
 }

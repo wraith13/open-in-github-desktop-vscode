@@ -23,11 +23,11 @@ const diagnosticWarningObject = Object.freeze
             f => f[1].some(d => vscode.DiagnosticSeverity.Error === d.severity)
         );
         return ! hasError ||
-            undefined !== await vscode.window.showWarningMessage
+            locale.map("Continue") === await vscode.window.showWarningMessage
             (
                 locale.map("You have error."),
-                { modal: true, },
-                locale.map("Continue")
+                locale.map("Continue"),
+                locale.map("Cancel")
             );
     },
     "error or warning": async () =>
@@ -42,11 +42,11 @@ const diagnosticWarningObject = Object.freeze
             )
         );
         return ! hasErrorOrWarning ||
-            undefined !== await vscode.window.showWarningMessage
+            locale.map("Continue") === await vscode.window.showWarningMessage
             (
                 locale.map("You have error or warning."),
-                { modal: true, },
-                locale.map("Continue")
+                locale.map("Continue"),
+                locale.map("Cancel")
             );
     },
 });
@@ -58,11 +58,11 @@ const unsavedWarningObject = Object.freeze
         const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty && !i.isUntitled)
             .map(i => i.fileName);
         return unsavedFiles.length <= 0 ||
-            undefined !== await vscode.window.showWarningMessage
+            locale.map("Continue") === await vscode.window.showWarningMessage
             (
                 locale.map("You have unsaved existing files."),
-                { modal: true, },
-                locale.map("Continue")
+                locale.map("Continue"),
+                locale.map("Cancel")
             );
     },
     "unsaved files": async () =>
@@ -70,11 +70,11 @@ const unsavedWarningObject = Object.freeze
         const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty || i.isUntitled)
         .map(i => i.fileName);
         return unsavedFiles.length <= 0 ||
-            undefined !== await vscode.window.showWarningMessage
+            locale.map("Continue") === await vscode.window.showWarningMessage
             (
                 locale.map("You have unsaved files."),
-                { modal: true, },
-                locale.map("Continue")
+                locale.map("Continue"),
+                locale.map("Cancel")
             );
     },
 });

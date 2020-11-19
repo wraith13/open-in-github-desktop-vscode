@@ -4,6 +4,12 @@ All notable changes to the "unsaved-files-vscode" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.4.0 - 2020-11-??
+
+### Changed
+
+- Changed the warning message from modal to non-modal.
+
 ## 1.3.0 - 2020-11-05
 
 ### Added
