@@ -13,70 +13,58 @@ const alignmentObject = Object.freeze
     "left": vscode.StatusBarAlignment.Left,
     "right": vscode.StatusBarAlignment.Right,
 });
+const hasError = () => vscode.languages.getDiagnostics().some
+(
+    f => f[1].some(d => vscode.DiagnosticSeverity.Error === d.severity)
+);
+const hasErrorOrWarning = () => vscode.languages.getDiagnostics().some
+(
+    f => f[1].some
+    (
+        d =>
+            vscode.DiagnosticSeverity.Error === d.severity ||
+            vscode.DiagnosticSeverity.Warning === d.severity
+    )
+);
+const hasUnsavedExistingFiles = () => 0 < vscode.workspace.textDocuments
+    .filter(i => i.isDirty && !i.isUntitled).length;
+const hasUnsavedFiles = () => 0 < vscode.workspace.textDocuments
+    .filter(i => i.isDirty || i.isUntitled).length;
 const diagnosticWarningObject = Object.freeze
 ({
     "none": async () => true,
-    "error": async () =>
-    {
-        const hasError = vscode.languages.getDiagnostics().some
+    "error": async () => ! hasError() ||
+        "Continue" === await locale.showWarningMessage
         (
-            f => f[1].some(d => vscode.DiagnosticSeverity.Error === d.severity)
-        );
-        return ! hasError ||
-            locale.map("Continue") === await vscode.window.showWarningMessage
-            (
-                locale.map("You have error."),
-                locale.map("Continue"),
-                locale.map("Cancel")
-            );
-    },
-    "error or warning": async () =>
-    {
-        const hasErrorOrWarning = vscode.languages.getDiagnostics().some
+            { map: "You have error.", },
+            "Continue",
+            "Cancel",
+        ),
+    "error or warning": async () =>  ! hasErrorOrWarning() ||
+        "Continue" === await locale.showWarningMessage
         (
-            f => f[1].some
-            (
-                d =>
-                    vscode.DiagnosticSeverity.Error === d.severity ||
-                    vscode.DiagnosticSeverity.Warning === d.severity
-            )
-        );
-        return ! hasErrorOrWarning ||
-            locale.map("Continue") === await vscode.window.showWarningMessage
-            (
-                locale.map("You have error or warning."),
-                locale.map("Continue"),
-                locale.map("Cancel")
-            );
-    },
+            { map: "You have error or warning.", },
+            "Continue",
+            "Cancel"
+        ),
 });
 const unsavedWarningObject = Object.freeze
 ({
     "none": async () => true,
-    "unsaved existing files": async () =>
-    {
-        const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty && !i.isUntitled)
-            .map(i => i.fileName);
-        return unsavedFiles.length <= 0 ||
-            locale.map("Continue") === await vscode.window.showWarningMessage
-            (
-                locale.map("You have unsaved existing files."),
-                locale.map("Continue"),
-                locale.map("Cancel")
-            );
-    },
-    "unsaved files": async () =>
-    {
-        const unsavedFiles = vscode.workspace.textDocuments.filter(i => i.isDirty || i.isUntitled)
-        .map(i => i.fileName);
-        return unsavedFiles.length <= 0 ||
-            locale.map("Continue") === await vscode.window.showWarningMessage
-            (
-                locale.map("You have unsaved files."),
-                locale.map("Continue"),
-                locale.map("Cancel")
-            );
-    },
+    "unsaved existing files": async () =>  ! hasUnsavedExistingFiles() ||
+        "Continue" === await locale.showWarningMessage
+        (
+            { map: "You have unsaved existing files.", },
+            "Continue",
+            "Cancel"
+        ),
+    "unsaved files": async () => ! hasUnsavedFiles() ||
+        "Continue" === await locale.showWarningMessage
+        (
+            { map: "You have unsaved files.", },
+            "Continue",
+            "Cancel"
+        ),
 });
 module Config
 {
@@ -182,11 +170,11 @@ export const openInGithubDesktop = async () =>
     {
         if (searchForDocument || vscode.workspace.rootPath)
         {
-            await vscode.window.showErrorMessage(locale.map("openInGithubDesktop.notFoundGitConfig"));
+            await locale.showErrorMessage({ map: "openInGithubDesktop.notFoundGitConfig", });
         }
         else
         {
-            await vscode.window.showErrorMessage(locale.map("openInGithubDesktop.notOpenFolderInThisWindow"));
+            await locale.showErrorMessage({ map: "openInGithubDesktop.notOpenFolderInThisWindow", });
         }
     }
     else
@@ -194,7 +182,7 @@ export const openInGithubDesktop = async () =>
         const { err, data } = await fx.readFile(gitConfigPath);
         if (err || !data)
         {
-            await vscode.window.showErrorMessage(locale.map("openInGithubDesktop.canNotReadGitConfig"));
+            await locale.showErrorMessage({ map: "openInGithubDesktop.canNotReadGitConfig", });
         }
         else
         {
@@ -203,7 +191,7 @@ export const openInGithubDesktop = async () =>
             const repositoryUrl = (gitConfig["remote \"origin\""] || { })["url"];
             if (!repositoryUrl)
             {
-                await vscode.window.showErrorMessage(locale.map("openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig"));
+                await locale.showErrorMessage({ map: "openInGithubDesktop.notFoundRemoteOriginUrlInGitConfig", });
             }
             else
             if
