@@ -25,7 +25,7 @@
         "GitHub Desktop"
     ],
     "activationEvents": [
-        "*"
+        "onStartupFinished"
     ],
     "main": "./out/source/extension.js",
     "contributes": {
