@@ -4,6 +4,12 @@ All notable changes to the "unsaved-files-vscode" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.4.2 - 2021-??-??
+
+### Security
+
+- npm audit fix
+
 ## 1.4.1 - 2020-12-03
 
 ### Changed
