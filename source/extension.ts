@@ -69,15 +69,15 @@ const unsavedWarningObject = Object.freeze
 module Config
 {
     export const root = vscel.config.makeRoot(packageJson);
-    export const traversalSearchGitConfig = root.makeEntry<boolean>("openInGithubDesktop.traversalSearchGitConfig");
-    export const traversalSearchGitConfigForCurrentDocument = root.makeEntry<boolean>("openInGithubDesktop.traversalSearchGitConfigForCurrentDocument");
+    export const traversalSearchGitConfig = root.makeEntry<boolean>("openInGithubDesktop.traversalSearchGitConfig", "active-workspace");
+    export const traversalSearchGitConfigForCurrentDocument = root.makeEntry<boolean>("openInGithubDesktop.traversalSearchGitConfigForCurrentDocument", "active-workspace");
     export module statusBar
     {
-        export const label = root.makeEntry<string>("openInGithubDesktop.statusBar.Label");
-        export const alignment = root.makeMapEntry("openInGithubDesktop.statusBar.Alignment", alignmentObject);
+        export const label = root.makeEntry<string>("openInGithubDesktop.statusBar.Label", "root-workspace");
+        export const alignment = root.makeMapEntry("openInGithubDesktop.statusBar.Alignment", "root-workspace", alignmentObject);
     }
-    export const diagnosticWarning = root.makeMapEntry("openInGithubDesktop.diagnosticWarning", diagnosticWarningObject);
-    export const unsavedWarning = root.makeMapEntry("openInGithubDesktop.unsavedWarning", unsavedWarningObject);
+    export const diagnosticWarning = root.makeMapEntry("openInGithubDesktop.diagnosticWarning", "active-workspace", diagnosticWarningObject);
+    export const unsavedWarning = root.makeMapEntry("openInGithubDesktop.unsavedWarning", "active-workspace", unsavedWarningObject);
 }
 module fx
 {
@@ -162,10 +162,10 @@ export const isDocumentOnFileSystem = (document: vscode.TextDocument) => "file" 
 export const openInGithubDesktop = async () =>
 {
     const activeTextEditor = vscode.window.activeTextEditor;
-    const searchForDocument = activeTextEditor && isDocumentOnFileSystem(activeTextEditor.document) && Config.traversalSearchGitConfigForCurrentDocument.get("");
+    const searchForDocument = activeTextEditor && isDocumentOnFileSystem(activeTextEditor.document) && Config.traversalSearchGitConfigForCurrentDocument.get("default-scope");
     const gitConfigPath =
         ((activeTextEditor && searchForDocument) ? await searchGitConfig(getParentDir(activeTextEditor.document.fileName), true): null) ||
-        (vscode.workspace.rootPath ? await searchGitConfig(vscode.workspace.rootPath, Config.traversalSearchGitConfig.get("")): null);
+        (vscode.workspace.rootPath ? await searchGitConfig(vscode.workspace.rootPath, Config.traversalSearchGitConfig.get("default-scope")): null);
     if (null === gitConfigPath)
     {
         if (searchForDocument || vscode.workspace.rootPath)
@@ -196,8 +196,8 @@ export const openInGithubDesktop = async () =>
             else
             if
             (
-                await Config.diagnosticWarning.get("")() &&
-                await Config.unsavedWarning.get("")()
+                await Config.diagnosticWarning.get("default-scope")() &&
+                await Config.unsavedWarning.get("default-scope")()
             )
             {
                 await openExternal(`x-github-client://openRepo/${repositoryUrl}`);
@@ -208,7 +208,7 @@ export const openInGithubDesktop = async () =>
 export const activate = (context: vscode.ExtensionContext) =>
 {
     context.subscriptions.push(vscode.commands.registerCommand('openInGithubDesktop', openInGithubDesktop));
-    const alignment = Config.statusBar.alignment.get("");
+    const alignment = Config.statusBar.alignment.get("default-scope");
     if (alignment)
     {
         context.subscriptions.push
@@ -216,28 +216,28 @@ export const activate = (context: vscode.ExtensionContext) =>
             vscel.statusbar.createItem
             ({
                 alignment,
-                text: Config.statusBar.label.get(""),
+                text: Config.statusBar.label.get("default-scope"),
                 command: `openInGithubDesktop`,
                 tooltip: locale.map("openInGithubDesktop.title"),
                 withShow: true,
             })
         );
     }
-    context.subscriptions.push
-    (
-        vscode.workspace.onDidChangeConfiguration
-        (
-            async (event) =>
-            {
-                if
-                (
-                    event.affectsConfiguration("openInGithubDesktop")
-                )
-                {
-                    Config.root.entries.forEach(i => i.clear());
-                }
-            }
-        )
-    );
+    // context.subscriptions.push
+    // (
+    //     vscode.workspace.onDidChangeConfiguration
+    //     (
+    //         async (event) =>
+    //         {
+    //             if
+    //             (
+    //                 event.affectsConfiguration("openInGithubDesktop")
+    //             )
+    //             {
+    //                 Config.root.entries.forEach(i => i.clear());
+    //             }
+    //         }
+    //     )
+    // );
 };
 export const deactivate = () => { };
